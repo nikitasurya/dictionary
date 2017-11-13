@@ -6,6 +6,7 @@ import json
 
 #print argv, type(argv), 
 
+
 def internet_on():
     try:
         urllib2.urlopen('http://216.58.192.142', timeout=1)
