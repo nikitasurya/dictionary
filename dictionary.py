@@ -1,5 +1,5 @@
 from sys import argv
-import urllib2 
+from urllib2 import Request, urlopen, URLError
 import json
 #script, word = argv
 
@@ -9,7 +9,7 @@ import json
 
 def internet_on():
     try:
-        urllib2.urlopen('http://216.58.192.142', timeout=1)
+        urlopen('http://216.58.192.142', timeout=1)
         print "Internet is ON"
         return True
     except urllib2.URLError as err: 
