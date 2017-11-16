@@ -28,26 +28,30 @@ class Dictionary(object):                                               #class d
 		if x==True:
 			pass
 		else:
-			request = Request('http://api.pearson.com/v2/dictionaries/laad3/entries?headword=%r'%self.meaning)
-			response = urlopen(request)
-			read_response = response.read()
-			tmp = json.loads(read_response)
-			tmp.keys()
-			if(len(tmp['results'])==0):
-				print "no such word exists"
-			else:
-				word_meaning=tmp['results'][0]['senses'][0]['definition']
-				d={self.meaning:word_meaning}
-				self.store_words(d)
+			try:
+				request = Request('http://api.pearson.com/v2/dictionaries/laad3/entries?headword=%r'%self.meaning)
+				response = urlopen(request)
+				read_response = response.read()
+				tmp = json.loads(read_response)
+				tmp.keys()
+				if(len(tmp['results'])==0):
+					print "no such word exists"
+				else:
+					word_meaning=tmp['results'][0]['senses'][0]['definition']
+					print word_meaning
+					d={self.meaning:word_meaning}
+					self.store_words(d)
+				raise
+			except e:
+				print "got an error code", e
 	
-	def check(self):                                                          #function to check if the word exists in the offline dictionary
-		dict=open('offline_dictionary','rb')
-		if self.meaning in self.dictionary.keys():
+	def check(self):                                                          #function to check if the word exists in the offline dictionarys
+		if self.dictionary.get(self.meaning):
 			print "meaning from offline dictionary"
   			print self.dictionary[self.meaning] 
   			return True
 		else:
-  			print "searching from the internet"
+ 			print "searching from the internet"
   			return False
 
 
