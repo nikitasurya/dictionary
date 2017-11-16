@@ -3,7 +3,7 @@ from urllib2 import Request, urlopen, URLError
 import json
 import pickle
 import os
-script, word = argv 											   #to take input from user
+
 
 
 def internet_on():                                                 #to check if the internet is turned on or not.  
@@ -41,9 +41,8 @@ class Dictionary(object):                                               #class d
 					print word_meaning
 					d={self.meaning:word_meaning}
 					self.store_words(d)
-				raise
-			except e:
-				print "got an error code", e
+			except Exception as e:
+				print "got an error code",e
 	
 	def check(self):                                                          #function to check if the word exists in the offline dictionarys
 		if self.dictionary.get(self.meaning):
@@ -67,8 +66,16 @@ class Dictionary(object):                                               #class d
 			words=pickle.load(open('offline_dictionary','rb'))                #if it exists add the word and its meaning. (used pickle for this)
 			words.update(m)
 			pickle.dump(words, open(r'offline_dictionary', 'wb'))
-	
+		
 
+if len(argv) > 1:
+    print("argument taken")
+else:
+	print ("Usage: python dictionary.py <word>")
+	exit()
+
+script,word = argv 											   #to take input from user
+    
 x=internet_on()                                            #call to check internet connection
 if x==True:                                                #The rest of the code runs only if internet is on
 	meaning=Dictionary(word)
