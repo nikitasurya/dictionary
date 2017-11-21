@@ -7,14 +7,15 @@ import os
 
 
 def internet_on():                                                 #to check if the internet is turned on or not.  
-	
 	try:
 		urlopen('https://www.google.co.in/?gfe_rd=cr&dcr=0&ei=9lwKWuipCeby8AfD_KnwBQ', timeout=1)
-		print "Internet is ON"
-		return True
 	except URLError as err: 
 		print "Internet is not working"
 		return False
+	else:
+		print "Internet is ON"
+		return True
+	
 
 
 class Dictionary(object):                                               #class defining the word and to function to get the definition of the word
@@ -23,17 +24,16 @@ class Dictionary(object):                                               #class d
 		self.dictionary=self.load_dictionary()
 
 	def get_definition(self):
-		
 		x=self.check()
 		if x==True:
 			pass
 		else:
 			try:
-				request = Request('http://api.pearson.com/v2/dictionaries/laad3/entries?headword=%r'%self.meaning)
-				response = urlopen(request)
-				read_response = response.read()
-				tmp = json.loads(read_response)
-				tmp.keys()
+				response=urlopen(Request('http://api.pearson.com/v2/dictionaries/laad3/entries?headword=%r'%self.meaning))
+			except Exception as e:
+				print "got an error code",e
+			else:
+				tmp = json.loads(response.read())
 				if(len(tmp['results'])==0):
 					print "no such word exists"
 				else:
@@ -41,8 +41,7 @@ class Dictionary(object):                                               #class d
 					print word_meaning
 					d={self.meaning:word_meaning}
 					self.store_words(d)
-			except Exception as e:
-				print "got an error code",e
+			
 	
 	def check(self):                                                          #function to check if the word exists in the offline dictionarys
 		if self.dictionary.get(self.meaning):
@@ -62,10 +61,10 @@ class Dictionary(object):                                               #class d
 	
 
 	def store_words(self,m):                                                  #to create a offline dictionary if it does not exists  
-			pickle.dump(self.dictionary, open(r'offline_dictionary', 'wb'))
-			words=pickle.load(open('offline_dictionary','rb'))                #if it exists add the word and its meaning. (used pickle for this)
-			words.update(m)
-			pickle.dump(words, open(r'offline_dictionary', 'wb'))
+		pickle.dump(self.dictionary, open(r'offline_dictionary', 'wb'))
+		words=pickle.load(open('offline_dictionary','rb'))                #if it exists add the word and its meaning. (used pickle for this)
+		words.update(m)
+		pickle.dump(words, open(r'offline_dictionary', 'wb'))
 		
 
 if len(argv) > 1:
@@ -73,6 +72,7 @@ if len(argv) > 1:
 else:
 	print ("Usage: python dictionary.py <word>")
 	exit()
+
 
 script,word = argv 											   #to take input from user
     
@@ -83,6 +83,7 @@ if x==True:                                                #The rest of the code
 
 else:
 	print"please turn on your internet"
+	exit()
 
 #important websites
 #https://www.codecademy.com/courses/python-intermediate-en-6zbLp/0/1?curriculum_id=50ecbb9b71204640240001bf
